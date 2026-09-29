@@ -1,47 +1,80 @@
-// 国産食材こだわりチェーン レストランマップ 型定義ファイル
+// 国産食材・産地こだわりレストランマップ 型定義ファイル
 
-// 食材の国産対応レベル
+// 産地の安全性ランク区分
+export type SafetyRank =
+  | 'domestic_pure' // 🟢 純国産（野菜・主要食材100%国産）
+  | 'no_china_safe' // 🔵 中国産不使用（国産＋欧米豪産メイン、安心素材）
+  | 'custom_local'  // 🟠 個人店（手動登録・地産地消）
+  | 'mixed_selective' // 🟡 一部外国産・メニューにより選択可能
+  | 'china_included'; // ⚪ 中国産食材あり（主要メニューに中国産野菜・加工肉等を含む）
+
+// 食材の産出国
+export type OriginCountry =
+  | '日本'
+  | '中国'
+  | 'オーストラリア・NZ'
+  | 'アメリカ・カナダ'
+  | '欧州'
+  | 'その他';
+
+// 食材の国産・産地対応状況
 export type DomesticHighlight = {
-  // 野菜の国産状況
+  // 野菜の産地
   vegetable: {
-    is100Percent: boolean;
+    is100PercentDomestic: boolean;
+    containsChina: boolean;
     description: string;
+    countries: OriginCountry[];
   };
-  // お肉の国産状況
+  // お肉の産地
   meat: {
-    available: boolean;
+    isDomestic: boolean;
+    containsChina: boolean;
     description: string;
+    countries: OriginCountry[];
   };
-  // その他食材（米・小麦粉など）
-  others?: string;
+  // 主食（米・小麦等）や調味料
+  others?: {
+    description: string;
+    countries?: OriginCountry[];
+  };
 };
 
 // チェーン（ブランド）マスタ情報
 export interface ChainBrand {
   id: string;
   name: string;
-  genre: 'ちゃんぽん・麺類' | '中華・餃子' | 'ハンバーガー' | '和食・定食' | '鍋・しゃぶしゃぶ' | '洋食・ファミレス';
-  color: string; // ピンやバッジのテーマカラー
-  iconText: string; // ピンに表示する短縮名（例: "王将", "リンガー", "モス"）
-  commitmentSummary: string; // 国産へのこだわり要約
+  genre: string;
+  safetyRank: SafetyRank;
+  containsChinaIngredients: boolean; // 主要メニューに中国産食材が含まれているか
+  countriesUsed: OriginCountry[]; // 主に使用されている国
+  color: string; // テーマカラー
+  iconText: string;
+  commitmentSummary: string;
   domesticHighlight: DomesticHighlight;
-  officialSourceUrl: string; // 公式HPの産地情報ページURL（自動更新用）
-  officialSiteUrl: string; // 公式サイトURL
+  officialSourceUrl?: string; // 公式HPの産地情報ページ
+  officialSiteUrl?: string;
 }
 
-// 個別店舗データ
+// 店舗データ（チェーン店および個人店）
 export interface Store {
   id: string;
   brandId: string;
   brandName: string;
-  name: string; // 例: "餃子の王将 富山店"
-  prefecture: string; // 例: "富山県"
-  city: string; // 例: "富山市"
-  address: string; // 例: "富山県富山市中川原309-1"
-  lat: number; // 緯度
-  lng: number; // 経度
+  name: string;
+  prefecture: string;
+  city: string;
+  address: string;
+  lat: number;
+  lng: number;
   phone?: string;
   openingHours?: string;
   hasParking?: boolean;
   takeoutAvailable?: boolean;
+  safetyRank: SafetyRank;
+  containsChinaIngredients: boolean;
+  countriesUsed: OriginCountry[];
+  isCustom?: boolean; // ユーザーが手動登録した個人店か
+  customNotes?: string; // 個人店のこだわりメモ
+  googleMapsUrl?: string; // Googleマップリンク
 }

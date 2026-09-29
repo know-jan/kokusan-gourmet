@@ -1,20 +1,31 @@
-// Leafletを用いたインタラクティブ地図コンポーネント
+// Leafletを用いたインタラクティブ地図コンポーネント（産地安全性ランク別ピン表示）
 import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
-import { Store, ChainBrand } from '../types';
+import { Store, ChainBrand, SafetyRank } from '../types';
 
 interface MapProps {
   stores: Store[];
   brands: Record<string, ChainBrand>;
   selectedStore: Store | null;
   onSelectStore: (store: Store) => void;
+  onMapClick?: (lat: number, lng: number) => void;
 }
+
+// ランク別の配色とラベル
+const RANK_CONFIG: Record<SafetyRank, { color: string; label: string; badge: string }> = {
+  domestic_pure: { color: '#16a34a', label: '純国産', badge: '🇯🇵 純国産' },
+  no_china_safe: { color: '#0284c7', label: '安心', badge: '🛡 中国産不使用' },
+  custom_local: { color: '#f59e0b', label: '★個人店', badge: '⭐ 地元個人店' },
+  mixed_selective: { color: '#eab308', label: '選択可', badge: '選択制' },
+  china_included: { color: '#94a3b8', label: '中国産有', badge: '🇨🇳 中国産あり' },
+};
 
 export const Map: React.FC<MapProps> = ({
   stores,
   brands,
   selectedStore,
   onSelectStore,
+  onMapClick,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -24,17 +35,15 @@ export const Map: React.FC<MapProps> = ({
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
-    // 富山県富山市周辺を初期表示（緯度: 36.6953, 経度: 137.2113, ズーム: 11）
     const map = L.map(mapContainerRef.current, {
       center: [36.6953, 137.2113],
       zoom: 11,
       zoomControl: true,
     });
 
-    // オープンストリートマップの標準タイルレイヤー（日本語対応・無料）
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> 貢献者',
+        '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>',
       maxZoom: 19,
     }).addTo(map);
 
@@ -42,13 +51,20 @@ export const Map: React.FC<MapProps> = ({
     markersLayerRef.current = markersLayer;
     mapInstanceRef.current = map;
 
+    // 地図クリックで個人店登録を促すイベント
+    map.on('click', (e: L.LeafletMouseEvent) => {
+      if (onMapClick) {
+        onMapClick(e.latlng.lat, e.latlng.lng);
+      }
+    });
+
     return () => {
       map.remove();
       mapInstanceRef.current = null;
     };
-  }, []);
+  }, [onMapClick]);
 
-  // 店舗ピンマーカーの描画・更新
+  // マーカー描画
   useEffect(() => {
     if (!mapInstanceRef.current || !markersLayerRef.current) return;
 
@@ -56,18 +72,17 @@ export const Map: React.FC<MapProps> = ({
     layer.clearLayers();
 
     stores.forEach((store) => {
-      const brand = brands[store.brandId];
       const isSelected = selectedStore?.id === store.id;
-      const bgColor = brand ? brand.color : '#16a34a';
-      const label = brand ? brand.iconText : store.brandName.slice(0, 2);
+      const rankInfo = RANK_CONFIG[store.safetyRank] || RANK_CONFIG.no_china_safe;
+      const bgColor = store.isCustom ? '#f59e0b' : rankInfo.color;
+      const label = store.isCustom ? '★' : store.brandName.slice(0, 2);
 
-      // カスタムHTMLピン（CSSスタイリング）
       const pinHtml = `
         <div class="custom-pin relative flex items-center justify-center ${
           isSelected ? 'ring-4 ring-offset-2 ring-emerald-500 scale-125 z-50' : ''
         }" style="background-color: ${bgColor}; width: ${isSelected ? '38px' : '32px'}; height: ${
         isSelected ? '38px' : '32px'
-      }; border: 2px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border-radius: 9999px;">
+      }; border: 2px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.25); border-radius: 9999px;">
           <span style="color: #ffffff; font-size: ${isSelected ? '11px' : '10px'}; font-weight: bold; white-space: nowrap; pointer-events: none;">
             ${label}
           </span>
@@ -85,43 +100,38 @@ export const Map: React.FC<MapProps> = ({
 
       const marker = L.marker([store.lat, store.lng], { icon: customIcon });
 
-      // ポップアップ内容（簡潔な店舗情報と国産こだわり）
+      const brand = brands[store.brandId];
       const popupContent = `
-        <div style="min-width: 220px; font-family: sans-serif; padding: 12px;">
-          <div style="font-size: 11px; font-weight: bold; color: ${bgColor}; margin-bottom: 2px;">
-            ${brand?.genre || 'レストラン'}
+        <div style="min-width: 210px; font-family: sans-serif; padding: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px; margin-bottom: 4px;">
+            <span style="font-size: 10px; font-weight: bold; color: ${bgColor}; background: #f8fafc; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2e8f0;">
+              ${rankInfo.badge}
+            </span>
+            <span style="font-size: 10px; color: #64748b;">${store.city}</span>
           </div>
-          <div style="font-size: 14px; font-weight: bold; color: #1e293b; margin-bottom: 6px;">
+          <div style="font-size: 13px; font-weight: bold; color: #1e293b; margin-bottom: 4px;">
             ${store.name}
           </div>
-          <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 6px 8px; margin-bottom: 8px;">
-            <div style="font-size: 11px; font-weight: bold; color: #15803d;">🌱 国産こだわりポイント</div>
-            <div style="font-size: 11px; color: #166534; line-height: 1.4; margin-top: 2px;">
-              ${brand?.commitmentSummary || '国産食材へのこだわりあり'}
-            </div>
+          <div style="font-size: 11px; color: #334155; line-height: 1.4; margin-bottom: 6px;">
+            ${store.customNotes || brand?.commitmentSummary || '産地に配慮した店舗'}
           </div>
-          <div style="font-size: 11px; color: #64748b; line-height: 1.4;">
+          <div style="font-size: 10px; color: #64748b;">
             📍 ${store.address}
           </div>
         </div>
       `;
 
       marker.bindPopup(popupContent);
-
-      marker.on('click', () => {
-        onSelectStore(store);
-      });
-
+      marker.on('click', () => onSelectStore(store));
       layer.addLayer(marker);
 
-      // 選択中の店舗ならポップアップを開く
       if (isSelected) {
         marker.openPopup();
       }
     });
   }, [stores, brands, selectedStore, onSelectStore]);
 
-  // 店舗が選択されたときにその店舗へスムーズに地図を移動
+  // 選択店舗へのフォーカス
   useEffect(() => {
     if (!mapInstanceRef.current || !selectedStore) return;
     mapInstanceRef.current.flyTo([selectedStore.lat, selectedStore.lng], 14, {
@@ -132,6 +142,27 @@ export const Map: React.FC<MapProps> = ({
   return (
     <div className="relative w-full h-full">
       <div ref={mapContainerRef} className="w-full h-full" />
+
+      {/* 地図左下の凡例（ランク説明） */}
+      <div className="absolute bottom-4 left-4 z-[400] bg-white/90 backdrop-blur-xs border border-slate-200 shadow-md rounded-xl p-2.5 text-[10px] space-y-1">
+        <div className="font-bold text-slate-700 mb-1">ピンの見分け方</div>
+        <div className="flex items-center gap-1.5 text-slate-600">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+          <span>純国産（野菜・主要肉100%）</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-slate-600">
+          <span className="w-2.5 h-2.5 rounded-full bg-sky-600"></span>
+          <span>中国産不使用（国産・欧米豪産）</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-slate-600">
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+          <span>手動登録した個人店</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-slate-600">
+          <span className="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+          <span>中国産食材あり（排除トグルで非表示）</span>
+        </div>
+      </div>
     </div>
   );
 };

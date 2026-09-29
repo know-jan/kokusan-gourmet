@@ -1,5 +1,5 @@
-// メインアプリケーションコンポーネント
-import React, { useState, useMemo } from 'react';
+// メインアプリケーションコンポーネント（産地国フィルタ・中国産排除・個人店登録対応）
+import React, { useState, useMemo, useEffect } from 'react';
 import { BRANDS, STORES_DATA } from './data/stores';
 import { Store } from './types';
 import { Header } from './components/Header';
@@ -7,77 +7,146 @@ import { FilterBar } from './components/FilterBar';
 import { StoreList } from './components/StoreList';
 import { StoreDetail } from './components/StoreDetail';
 import { Map } from './components/Map';
-import { MapPin, List, Info, Sparkles, CheckCircle2 } from 'lucide-react';
+import { AddCustomStoreModal } from './components/AddCustomStoreModal';
+import { MapPin, List, Info, Sparkles, ShieldCheck } from 'lucide-react';
+
+const LOCAL_STORAGE_KEY = 'kokusan_custom_stores_v1';
 
 export const App: React.FC = () => {
+  const [customStores, setCustomStores] = useState<Store[]>([]);
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedBrandId, setSelectedBrandId] = useState('');
+  const [excludeChina, setExcludeChina] = useState(true); // デフォルトで中国産を排除！
   const [require100PercentVeg, setRequire100PercentVeg] = useState(false);
   const [requireDomesticMeat, setRequireDomesticMeat] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
   const [mobileTab, setMobileTab] = useState<'map' | 'list'>('map');
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [clickedMapCoords, setClickedMapCoords] = useState<{ lat: number; lng: number } | null>(
+    null
+  );
 
-  // 富山県内の市町村リストを抽出
+  // 初回マウント時にLocalStorageから保存済み個人店を復元
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (saved) {
+        setCustomStores(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error('個人店データの読み込みに失敗しました:', e);
+    }
+  }, []);
+
+  // 個人店データが更新されたらLocalStorageに保存
+  const saveCustomStores = (newStores: Store[]) => {
+    setCustomStores(newStores);
+    try {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newStores));
+    } catch (e) {
+      console.error('個人店データの保存に失敗しました:', e);
+    }
+  };
+
+  // 個人店追加ハンドラ
+  const handleAddStore = (newStore: Store) => {
+    const updated = [newStore, ...customStores];
+    saveCustomStores(updated);
+    setSelectedStore(newStore);
+  };
+
+  // 個人店削除ハンドラ
+  const handleDeleteCustomStore = (id: string) => {
+    const updated = customStores.filter((s) => s.id !== id);
+    saveCustomStores(updated);
+    if (selectedStore?.id === id) {
+      setSelectedStore(null);
+    }
+  };
+
+  // 全店舗（マスタ＋個人店）
+  const allStores = useMemo(() => {
+    return [...customStores, ...STORES_DATA];
+  }, [customStores]);
+
+  // 富山県内の市町村リスト
   const cities = useMemo(() => {
     const citySet = new Set<string>();
-    STORES_DATA.forEach((s) => {
+    allStores.forEach((s) => {
       if (s.city) citySet.add(s.city);
     });
     return Array.from(citySet).sort();
-  }, []);
+  }, [allStores]);
 
   // フィルタリング処理
   const filteredStores = useMemo(() => {
-    return STORES_DATA.filter((store) => {
+    return allStores.filter((store) => {
       const brand = BRANDS[store.brandId];
 
-      // キーワード検索（店名、住所、ブランド名）
+      // 1. 中国産排除フィルタ（最優先！）
+      if (excludeChina && store.containsChinaIngredients) {
+        return false;
+      }
+
+      // 2. キーワード検索
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         const matchName = store.name.toLowerCase().includes(q);
         const matchAddr = store.address.toLowerCase().includes(q);
         const matchBrand = store.brandName.toLowerCase().includes(q);
-        const matchGenre = brand?.genre.toLowerCase().includes(q);
-        if (!matchName && !matchAddr && !matchBrand && !matchGenre) {
+        const matchNotes = store.customNotes?.toLowerCase().includes(q);
+        const matchSummary = brand?.commitmentSummary.toLowerCase().includes(q);
+        if (!matchName && !matchAddr && !matchBrand && !matchNotes && !matchSummary) {
           return false;
         }
       }
 
-      // ブランド絞り込み
-      if (selectedBrandId && store.brandId !== selectedBrandId) {
-        return false;
-      }
-
-      // 市町村絞り込み
+      // 3. 市町村絞り込み
       if (selectedCity && store.city !== selectedCity) {
         return false;
       }
 
-      // 野菜国産100%条件
-      if (require100PercentVeg && !brand?.domesticHighlight.vegetable.is100Percent) {
+      // 4. 食材産出国指定（日本、欧州、豪州、北米等）
+      if (selectedCountry && !store.countriesUsed.includes(selectedCountry as any)) {
         return false;
       }
 
-      // お肉国産対応条件
-      if (requireDomesticMeat && !brand?.domesticHighlight.meat.available) {
-        return false;
+      // 5. 野菜国産100%条件
+      if (require100PercentVeg) {
+        if (store.isCustom) {
+          if (store.safetyRank !== 'domestic_pure') return false;
+        } else if (!brand?.domesticHighlight.vegetable.is100PercentDomestic) {
+          return false;
+        }
+      }
+
+      // 6. お肉国産対応条件
+      if (requireDomesticMeat) {
+        if (store.isCustom) {
+          if (!store.countriesUsed.includes('日本')) return false;
+        } else if (!brand?.domesticHighlight.meat.isDomestic) {
+          return false;
+        }
       }
 
       return true;
     });
   }, [
+    allStores,
+    excludeChina,
     searchQuery,
-    selectedBrandId,
     selectedCity,
+    selectedCountry,
     require100PercentVeg,
     requireDomesticMeat,
   ]);
 
-  // 店舗選択ハンドラ（選択時にモバイルなら地図タブに切り替えることも可能）
-  const handleSelectStore = (store: Store) => {
-    setSelectedStore(store);
+  // 地図クリックで個人店登録を開く
+  const handleMapClick = (lat: number, lng: number) => {
+    setClickedMapCoords({ lat, lng });
+    setShowAddModal(true);
   };
 
   return (
@@ -85,34 +154,45 @@ export const App: React.FC = () => {
       {/* ヘッダー */}
       <Header
         brands={BRANDS}
-        activeBrandId={selectedBrandId}
-        onBrandClick={(brandId) => setSelectedBrandId(brandId)}
+        activeBrandId=""
+        onBrandClick={(brandId) => {
+          if (brandId) {
+            setSearchQuery(BRANDS[brandId]?.name || '');
+          } else {
+            setSearchQuery('');
+          }
+        }}
       />
 
-      {/* メインレイアウト */}
+      {/* メインエリア */}
       <div className="flex-1 flex flex-col md:flex-row relative overflow-hidden">
-        {/* サイドバー（PC: 左側固定 / モバイル: タブ切り替え） */}
+        {/* サイドバー（PC: 左側固定 / スマホ: タブ切り替え） */}
         <div
           className={`w-full md:w-[420px] lg:w-[460px] h-full flex flex-col bg-slate-50 border-r border-slate-200 z-20 transition-all ${
             mobileTab === 'list' ? 'flex' : 'hidden md:flex'
           }`}
         >
           {/* 検索・絞り込みエリア */}
-          <div className="p-3 sm:p-4 bg-white border-b border-slate-200 shadow-xs">
+          <div className="p-3 sm:p-4 bg-white border-b border-slate-200 shadow-2xs">
             <FilterBar
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
-              selectedBrandId={selectedBrandId}
-              onSelectBrand={setSelectedBrandId}
+              excludeChina={excludeChina}
+              onToggleExcludeChina={() => setExcludeChina(!excludeChina)}
               require100PercentVeg={require100PercentVeg}
               onToggle100PercentVeg={() => setRequire100PercentVeg(!require100PercentVeg)}
               requireDomesticMeat={requireDomesticMeat}
               onToggleDomesticMeat={() => setRequireDomesticMeat(!requireDomesticMeat)}
+              selectedCountry={selectedCountry}
+              onSelectCountry={setSelectedCountry}
               selectedCity={selectedCity}
               onSelectCity={setSelectedCity}
               cities={cities}
-              brands={BRANDS}
               totalCount={filteredStores.length}
+              onOpenAddModal={() => {
+                setClickedMapCoords(null);
+                setShowAddModal(true);
+              }}
             />
           </div>
 
@@ -123,7 +203,7 @@ export const App: React.FC = () => {
               brands={BRANDS}
               selectedStore={selectedStore}
               onSelectStore={(store) => {
-                handleSelectStore(store);
+                setSelectedStore(store);
                 if (window.innerWidth < 768) {
                   setMobileTab('map');
                 }
@@ -131,15 +211,17 @@ export const App: React.FC = () => {
             />
           </div>
 
-          {/* フッター情報バー */}
+          {/* フッター情報 */}
           <div className="p-3 bg-white border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500">
-            <span>富山県内 {STORES_DATA.length} 店舗掲載中</span>
+            <span>
+              掲載: {allStores.length}店（個人店: {customStores.length}店）
+            </span>
             <button
               onClick={() => setShowInfoModal(true)}
               className="flex items-center gap-1 text-emerald-700 hover:text-emerald-800 font-semibold"
             >
               <Info size={13} />
-              自動更新・こだわり基準について
+              産地基準・中国産判定について
             </button>
           </div>
         </div>
@@ -154,23 +236,25 @@ export const App: React.FC = () => {
             stores={filteredStores}
             brands={BRANDS}
             selectedStore={selectedStore}
-            onSelectStore={handleSelectStore}
+            onSelectStore={(store) => setSelectedStore(store)}
+            onMapClick={handleMapClick}
           />
 
-          {/* 店舗詳細フローティングカード（PC・タブレット表示） */}
+          {/* 店舗詳細フローティングカード */}
           {selectedStore && (
             <div className="absolute top-4 right-4 z-[500] w-[340px] sm:w-[380px] max-w-[calc(100vw-32px)]">
               <StoreDetail
                 store={selectedStore}
                 brand={BRANDS[selectedStore.brandId]}
                 onClose={() => setSelectedStore(null)}
+                onDeleteCustomStore={handleDeleteCustomStore}
               />
             </div>
           )}
         </div>
       </div>
 
-      {/* モバイル用ナビゲーションバー（スマホのみ） */}
+      {/* スマホ用タブ切り替えバー */}
       <div className="md:hidden bg-white border-t border-slate-200 py-2 px-6 flex items-center justify-around z-30 shadow-lg">
         <button
           onClick={() => setMobileTab('map')}
@@ -192,14 +276,24 @@ export const App: React.FC = () => {
         </button>
       </div>
 
-      {/* 自動更新・基準についてのインフォメーションモーダル */}
+      {/* 個人店手動登録モーダル */}
+      {showAddModal && (
+        <AddCustomStoreModal
+          initialLat={clickedMapCoords?.lat}
+          initialLng={clickedMapCoords?.lng}
+          onClose={() => setShowAddModal(false)}
+          onAddStore={handleAddStore}
+        />
+      )}
+
+      {/* 基準説明モーダル */}
       {showInfoModal && (
         <div className="fixed inset-0 z-[1000] bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b pb-3">
               <h3 className="font-bold text-base text-slate-800 flex items-center gap-1.5">
                 <Sparkles size={18} className="text-emerald-600" />
-                国産食材マップと月次更新の仕組み
+                食材の産地基準と中国産排除の仕組み
               </h3>
               <button
                 onClick={() => setShowInfoModal(false)}
@@ -211,27 +305,33 @@ export const App: React.FC = () => {
 
             <div className="space-y-3 text-xs text-slate-600 leading-relaxed">
               <p>
-                本マップは、<strong>国産の野菜やお肉を積極的に使用している国内チェーンレストラン</strong>を可視化し、食の安心・安全や地産地消を応援するためのWebマップです。
+                本マップは、<strong>「中国産食材を避け、安全な国産・欧米豪産を選びたい」</strong>という消費者の声に応えるために設計されています。
               </p>
 
-              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 space-y-1.5">
-                <p className="font-bold text-emerald-900 flex items-center gap-1">
-                  <CheckCircle2 size={14} /> 掲載基準
+              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 space-y-2">
+                <p className="font-bold text-emerald-950 flex items-center gap-1">
+                  <ShieldCheck size={15} /> 産地判定のランク基準
                 </p>
-                <ul className="list-disc list-inside space-y-1 text-emerald-800">
-                  <li><strong>リンガーハット</strong>: 野菜・小麦粉が100%国産</li>
-                  <li><strong>餃子の王将</strong>: 餃子の主要具材（豚肉・野菜）が100%国産</li>
-                  <li><strong>モスバーガー</strong>: 生野菜が契約農家の国産100%</li>
-                  <li><strong>大戸屋</strong>: 国産野菜・チルド国産肉・無添加店内調理</li>
-                  <li><strong>しゃぶ葉</strong>: 厳選国産牛・国産豚食べ放題コース提供</li>
+                <ul className="space-y-1.5 text-emerald-900">
+                  <li>
+                    <span className="font-bold">🟢 純国産 (ランクS)</span>: 野菜・主要お肉・小麦粉が100%国産（リンガーハット、王将の餃子、KFCのチキン等）
+                  </li>
+                  <li>
+                    <span className="font-bold">🔵 中国産不使用 (ランクA)</span>: 生野菜国産100%、肉は豪州・北米・欧州・国産を使用し、中国産野菜・加工肉を排除（モス、8番らーめん、サイゼリヤ等）
+                  </li>
+                  <li>
+                    <span className="font-bold">⭐ 地元個人店</span>: 手動登録された地産地消・無農薬などのこだわり店
+                  </li>
+                  <li>
+                    <span className="font-bold">⚪ 中国産食材あり</span>: 「中国産を排除」スイッチをONにすると地図から自動的に非表示になります。
+                  </li>
                 </ul>
               </div>
 
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-1.5">
-                <p className="font-bold text-slate-900">🔄 1か月に1回の自動更新について</p>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-1">
+                <p className="font-bold text-slate-800">💡 地図をクリックして個人店を追加できます</p>
                 <p>
-                  GitHub Actions（月次cronスケジュール）により、公式HPの産地情報ページやOpenStreetMapの店舗位置データを定期チェック。
-                  新店舗や産地情報の差分を自動検知してVercelへ自動デプロイする運用に対応しています。
+                  地図上の好きな場所をクリックするか、「個人店を登録」ボタンから、地元のお気に入り個人店をいつでも登録・保存できます。
                 </p>
               </div>
             </div>
