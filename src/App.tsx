@@ -16,7 +16,7 @@ export const App: React.FC = () => {
   const [customStores, setCustomStores] = useState<Store[]>([]);
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [excludeChina, setExcludeChina] = useState(true); // デフォルトで中国産を排除！
+  const [excludeChina, setExcludeChina] = useState(false); // 初期表示は全店舗表示！スイッチONで中国産を排除
   const [require100PercentVeg, setRequire100PercentVeg] = useState(false);
   const [requireDomesticMeat, setRequireDomesticMeat] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState('');

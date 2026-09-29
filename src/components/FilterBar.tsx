@@ -102,8 +102,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             </div>
             <p className="text-[10px] text-slate-500">
               {excludeChina
-                ? '中国産野菜・加工肉を使う店舗を非表示中'
-                : 'すべての店舗を表示中'}
+                ? '中国産ありの店舗を除外中（安心店舗のみ表示）'
+                : 'ジョイフル・ガスト等の全店舗を表示中（ONで一括除外）'}
             </p>
           </div>
         </div>
