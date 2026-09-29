@@ -1,0 +1,37 @@
+{
+  "updatedAt": "2026-09-29T13:57:15.758Z",
+  "prefectureTarget": "富山県",
+  "officialUrlChecks": [
+    {
+      "brand": "リンガーハット",
+      "status": "OK",
+      "httpStatus": 200,
+      "finalUrl": "https://www.ringerhut.jp/404.php"
+    },
+    {
+      "brand": "餃子の王将",
+      "status": "OK",
+      "httpStatus": 200,
+      "finalUrl": "https://www.ohsho.co.jp/kodawari/"
+    },
+    {
+      "brand": "モスバーガー",
+      "status": "OK",
+      "httpStatus": 200,
+      "finalUrl": "https://www.mos.jp/omoi/quality/vegetables/"
+    },
+    {
+      "brand": "大戸屋",
+      "status": "OK",
+      "httpStatus": 200,
+      "finalUrl": "https://www.ootoya.com/about/dedication/"
+    },
+    {
+      "brand": "しゃぶ葉",
+      "status": "OK",
+      "httpStatus": 200,
+      "finalUrl": "https://www.skylark.co.jp/syabuyo/"
+    }
+  ],
+  "message": "公式HPの接続状態および富山県内店舗データの整合性を確認完了"
+}
