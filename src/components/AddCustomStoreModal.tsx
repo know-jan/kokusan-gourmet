@@ -1,7 +1,7 @@
-// 個人店手動登録モーダルコンポーネント
-import React, { useState } from 'react';
+// 個人店手動登録モーダルコンポーネント（逆ジオコーディング・ワンタップアシスト対応）
+import React, { useState, useEffect } from 'react';
 import { Store, SafetyRank, OriginCountry } from '../types';
-import { X, Store as StoreIcon, MapPin, ShieldCheck } from 'lucide-react';
+import { X, Store as StoreIcon, MapPin, ShieldCheck, Sparkles, Loader2 } from 'lucide-react';
 
 interface AddCustomStoreModalProps {
   initialLat?: number;
@@ -19,8 +19,6 @@ export const AddCustomStoreModal: React.FC<AddCustomStoreModalProps> = ({
   const [name, setName] = useState('');
   const [city, setCity] = useState('富山市');
   const [address, setAddress] = useState('富山県富山市');
-  const lat = initialLat;
-  const lng = initialLng;
   const [genre, setGenre] = useState('和食・定食');
   const [excludeChina, setExcludeChina] = useState(true); // 中国産不使用か
   const [vegDomestic100, setVegDomestic100] = useState(true); // 野菜100%国産か
@@ -28,12 +26,73 @@ export const AddCustomStoreModal: React.FC<AddCustomStoreModalProps> = ({
   const [riceOrigin, setRiceOrigin] = useState('富山県産コシヒカリ100%');
   const [customNotes, setCustomNotes] = useState('');
   const [googleMapsUrl, setGoogleMapsUrl] = useState('');
+  const [isLoadingAddress, setIsLoadingAddress] = useState(false);
+
+  const lat = initialLat;
+  const lng = initialLng;
+
+  // 地図クリック地点の住所・店名を自動取得（Nominatim逆ジオコーディング）
+  useEffect(() => {
+    if (!initialLat || !initialLng) return;
+
+    let isMounted = true;
+    setIsLoadingAddress(true);
+
+    fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${initialLat}&lon=${initialLng}&zoom=18&addressdetails=1`,
+      {
+        headers: {
+          'Accept-Language': 'ja',
+        },
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted || !data) return;
+
+        // 住所情報の抽出
+        if (data.display_name) {
+          const rawAddr = data.display_name;
+          // 日本語形式に整形
+          const cleanAddr = rawAddr
+            .replace(/, 日本$/, '')
+            .replace(/〒\d{3}-\d{4}\s*/, '');
+          setAddress(cleanAddr);
+        }
+
+        // 市町村の自動選択
+        const addrObj = data.address || {};
+        const detectedCity = addrObj.city || addrObj.town || addrObj.village || addrObj.county || '';
+        if (detectedCity.includes('高岡')) setCity('高岡市');
+        else if (detectedCity.includes('射水')) setCity('射水市');
+        else if (detectedCity.includes('氷見')) setCity('氷見市');
+        else if (detectedCity.includes('砺波')) setCity('砺波市');
+        else if (detectedCity.includes('魚津')) setCity('魚津市');
+        else if (detectedCity.includes('黒部')) setCity('黒部市');
+        else if (detectedCity.includes('南砺')) setCity('南砺市');
+        else setCity('富山市');
+
+        // もし飲食店名（POI）が存在すれば店名に自動セット
+        if (data.name && !name) {
+          setName(data.name);
+        }
+      })
+      .catch((err) => {
+        console.warn('住所自動取得をスキップ:', err);
+      })
+      .finally(() => {
+        if (isMounted) setIsLoadingAddress(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [initialLat, initialLng]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
 
-    // 産地ステータスと使用国の算出
     const countries: OriginCountry[] = ['日本'];
     if (meatOrigin === '欧米豪') countries.push('オーストラリア・NZ');
     if (!excludeChina) countries.push('中国');
@@ -79,8 +138,17 @@ export const AddCustomStoreModal: React.FC<AddCustomStoreModalProps> = ({
               <StoreIcon size={18} />
             </div>
             <div>
-              <h3 className="font-bold text-base text-slate-800">こだわり個人店を手動登録</h3>
-              <p className="text-[11px] text-slate-400">地図上に保存され、次回も閲覧できます</p>
+              <h3 className="font-bold text-base text-slate-800 flex items-center gap-1.5">
+                こだわり店舗を手動登録
+                {isLoadingAddress && (
+                  <span className="text-[10px] text-emerald-600 font-normal flex items-center gap-0.5">
+                    <Loader2 size={11} className="animate-spin" /> 住所自動検出中...
+                  </span>
+                )}
+              </h3>
+              <p className="text-[11px] text-slate-400">
+                地図クリック地点の住所・店名が自動入力されます
+              </p>
             </div>
           </div>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 p-1">
@@ -138,26 +206,33 @@ export const AddCustomStoreModal: React.FC<AddCustomStoreModalProps> = ({
                 <option value="魚津市">魚津市</option>
                 <option value="黒部市">黒部市</option>
                 <option value="南砺市">南砺市</option>
+                <option value="滑川市">滑川市</option>
+                <option value="小矢部市">小矢部市</option>
               </select>
             </div>
           </div>
 
-          {/* 住所 */}
+          {/* 住所（自動補完） */}
           <div>
-            <label className="block font-bold mb-1 text-slate-800">住所</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block font-bold text-slate-800">住所</label>
+              <span className="text-[10px] text-emerald-700 flex items-center gap-0.5">
+                <Sparkles size={10} /> クリック地点から自動補完
+              </span>
+            </div>
             <div className="relative">
               <MapPin size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="富山県富山市総曲輪..."
+                placeholder="富山県富山市..."
                 className="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500"
               />
             </div>
           </div>
 
-          {/* 産地・安全ステータス（最重要ブロック） */}
+          {/* 産地・安全ステータス */}
           <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-3">
             <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
               <ShieldCheck size={16} className="text-emerald-600" />
@@ -246,7 +321,7 @@ export const AddCustomStoreModal: React.FC<AddCustomStoreModalProps> = ({
             />
           </div>
 
-          {/* Googleマップリンク（任意） */}
+          {/* Googleマップリンク */}
           <div>
             <label className="block font-bold mb-1 text-slate-800">
               Googleマップ共有リンク（任意）

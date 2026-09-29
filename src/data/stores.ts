@@ -1,5 +1,6 @@
 // 富山県内主要チェーン＆産地詳細データマスタ（一括網羅版）
 import { ChainBrand, Store } from '../types';
+import osmStoresRaw from './osm-stores.json';
 
 // ブランドマスタ情報（各チェーンの公式原産地開示に基づく判定）
 export const BRANDS: Record<string, ChainBrand> = {
@@ -583,8 +584,8 @@ export const BRANDS: Record<string, ChainBrand> = {
   },
 };
 
-// 富山県内の実店舗データ一覧
-export const STORES_DATA: Store[] = [
+// 富山県内の手動定義店舗データ
+const MANUAL_STORES: Store[] = [
   // ================= サイゼリヤ (安心：イタリア・豪州牛・自社農場レタス) =================
   {
     id: 'saizeriya-favore',
@@ -1415,3 +1416,38 @@ export const STORES_DATA: Store[] = [
     countriesUsed: ['中国', '日本'],
   },
 ];
+
+// OpenStreetMap (Overpass API) で自動取得された店舗を重複除外してマージ
+const mergedStores: Store[] = [...MANUAL_STORES];
+const seenCoordKeys = new Set(
+  MANUAL_STORES.map((s) => `${s.lat.toFixed(3)},${s.lng.toFixed(3)}`)
+);
+
+osmStoresRaw.forEach((osm: any) => {
+  const coordKey = `${osm.lat.toFixed(3)},${osm.lng.toFixed(3)}`;
+  if (!seenCoordKeys.has(coordKey)) {
+    seenCoordKeys.add(coordKey);
+    const brand = BRANDS[osm.brandId];
+    if (brand) {
+      mergedStores.push({
+        id: osm.id,
+        brandId: osm.brandId,
+        brandName: brand.name,
+        name: osm.name,
+        prefecture: '富山県',
+        city: osm.city,
+        address: osm.address,
+        lat: osm.lat,
+        lng: osm.lng,
+        phone: osm.phone,
+        openingHours: osm.openingHours,
+        safetyRank: brand.safetyRank,
+        containsChinaIngredients: brand.containsChinaIngredients,
+        countriesUsed: brand.countriesUsed,
+      });
+    }
+  }
+});
+
+// 富山県内全域の完全網羅店舗データ
+export const STORES_DATA: Store[] = mergedStores;

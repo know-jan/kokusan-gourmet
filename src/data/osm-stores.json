@@ -1,0 +1,740 @@
+[
+  {
+    "id": "osm-node-1075027058",
+    "brandId": "yoshinoya",
+    "name": "吉野家",
+    "lat": 36.627492,
+    "lng": 136.958192,
+    "city": "砺波市",
+    "address": "富山県砺波市"
+  },
+  {
+    "id": "osm-node-1989781486",
+    "brandId": "cocos",
+    "name": "ココス",
+    "lat": 36.895407,
+    "lng": 136.794714,
+    "city": "氷見市",
+    "address": "富山県氷見市"
+  },
+  {
+    "id": "osm-node-2029829790",
+    "brandId": "gusto",
+    "name": "ガスト",
+    "lat": 36.681569,
+    "lng": 137.259297,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-node-2174466946",
+    "brandId": "sukiya",
+    "name": "すき家",
+    "lat": 36.696595,
+    "lng": 137.194213,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-node-2174467332",
+    "brandId": "gyoza-no-ohsho",
+    "name": "大阪王将",
+    "lat": 36.696327,
+    "lng": 137.19407,
+    "city": "富山市",
+    "address": "富山県富山市",
+    "phone": "076-471-6007",
+    "openingHours": "11:00-23:00 \"please validate\""
+  },
+  {
+    "id": "osm-node-2701117392",
+    "brandId": "gusto",
+    "name": "ガスト",
+    "lat": 36.62763,
+    "lng": 136.956862,
+    "city": "砺波市",
+    "address": "富山県砺波市"
+  },
+  {
+    "id": "osm-node-2850058011",
+    "brandId": "matsuya",
+    "name": "松屋",
+    "lat": 36.512741,
+    "lng": 136.901243,
+    "city": "砺波市",
+    "address": "富山県砺波市"
+  },
+  {
+    "id": "osm-node-2850276966",
+    "brandId": "sukiya",
+    "name": "すき家",
+    "lat": 36.649577,
+    "lng": 136.962586,
+    "city": "砺波市",
+    "address": "富山県砺波市"
+  },
+  {
+    "id": "osm-node-2852922528",
+    "brandId": "gusto",
+    "name": "ガスト",
+    "lat": 36.731112,
+    "lng": 137.001521,
+    "city": "高岡市",
+    "address": "富山県高岡市"
+  },
+  {
+    "id": "osm-node-2852922554",
+    "brandId": "hachiban",
+    "name": "８番らーめん 佐野店",
+    "lat": 36.724111,
+    "lng": 136.995936,
+    "city": "高岡市",
+    "address": "富山県高岡市"
+  },
+  {
+    "id": "osm-node-3224637477",
+    "brandId": "joyfull",
+    "name": "あだちストアジョイフル店",
+    "lat": 36.896585,
+    "lng": 136.774965,
+    "city": "氷見市",
+    "address": "富山県氷見市"
+  },
+  {
+    "id": "osm-node-4330810121",
+    "brandId": "gusto",
+    "name": "ガスト",
+    "lat": 36.703729,
+    "lng": 137.096976,
+    "city": "射水市",
+    "address": "富山県射水市"
+  },
+  {
+    "id": "osm-node-4367972125",
+    "brandId": "cocos",
+    "name": "ココス",
+    "lat": 36.720236,
+    "lng": 137.091817,
+    "city": "射水市",
+    "address": "富山県射水市"
+  },
+  {
+    "id": "osm-node-5112061318",
+    "brandId": "yoshinoya",
+    "name": "吉野家",
+    "lat": 36.679482,
+    "lng": 137.210689,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-node-5208028028",
+    "brandId": "yoshinoya",
+    "name": "吉野家",
+    "lat": 36.757926,
+    "lng": 137.026212,
+    "city": "高岡市",
+    "address": "富山県高岡市"
+  },
+  {
+    "id": "osm-node-5231982443",
+    "brandId": "ootoya",
+    "name": "大戸屋ごはん処 富山婦中店",
+    "lat": 36.66236,
+    "lng": 137.174599,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-node-5255010218",
+    "brandId": "matsuya",
+    "name": "松屋",
+    "lat": 36.716368,
+    "lng": 137.233364,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-node-5255011529",
+    "brandId": "sukiya",
+    "name": "すき家",
+    "lat": 36.722729,
+    "lng": 137.235414,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-node-5262915473",
+    "brandId": "mos-burger",
+    "name": "モスバーガー",
+    "lat": 36.631971,
+    "lng": 136.954976,
+    "city": "砺波市",
+    "address": "富山県砺波市"
+  },
+  {
+    "id": "osm-node-5262915482",
+    "brandId": "hachiban",
+    "name": "8番らーめん 砺波店",
+    "lat": 36.631121,
+    "lng": 136.956077,
+    "city": "砺波市",
+    "address": "富山県砺波市"
+  },
+  {
+    "id": "osm-node-5404041834",
+    "brandId": "hachiban",
+    "name": "８番らーめん 入善店",
+    "lat": 36.939701,
+    "lng": 137.515466,
+    "city": "魚津市",
+    "address": "富山県魚津市"
+  },
+  {
+    "id": "osm-node-5430346401",
+    "brandId": "saizeriya",
+    "name": "サイゼリヤ",
+    "lat": 36.699613,
+    "lng": 137.21209,
+    "city": "富山市",
+    "address": "富山県富山市 富山市",
+    "phone": "076-433-1801",
+    "openingHours": "10:00-22:00"
+  },
+  {
+    "id": "osm-node-5707922853",
+    "brandId": "sukiya",
+    "name": "すき家",
+    "lat": 36.894717,
+    "lng": 136.800516,
+    "city": "氷見市",
+    "address": "富山県氷見市"
+  },
+  {
+    "id": "osm-node-6014504431",
+    "brandId": "ootoya",
+    "name": "大戸屋",
+    "lat": 36.824183,
+    "lng": 137.415337,
+    "city": "魚津市",
+    "address": "富山県魚津市",
+    "openingHours": "Mo-Su 11:00-22:00"
+  },
+  {
+    "id": "osm-node-6167517982",
+    "brandId": "saizeriya",
+    "name": "サイゼリヤ",
+    "lat": 36.641442,
+    "lng": 136.947201,
+    "city": "砺波市",
+    "address": "富山県砺波市 砺波市",
+    "phone": "0763-32-6316",
+    "openingHours": "11:00-22:00"
+  },
+  {
+    "id": "osm-node-6167529845",
+    "brandId": "saizeriya",
+    "name": "サイゼリヤ",
+    "lat": 36.747741,
+    "lng": 137.030423,
+    "city": "高岡市",
+    "address": "富山県高岡市 高岡市",
+    "phone": "0766-28-7360",
+    "openingHours": "11:00-02:00"
+  },
+  {
+    "id": "osm-node-6167537935",
+    "brandId": "saizeriya",
+    "name": "サイゼリヤ",
+    "lat": 36.663939,
+    "lng": 137.214463,
+    "city": "富山市",
+    "address": "富山県富山市 富山市",
+    "phone": "076-492-0214",
+    "openingHours": "11:00-02:00"
+  },
+  {
+    "id": "osm-node-6167590419",
+    "brandId": "saizeriya",
+    "name": "サイゼリヤ",
+    "lat": 36.714211,
+    "lng": 137.250059,
+    "city": "富山市",
+    "address": "富山県富山市 富山市",
+    "phone": "076-451-5201",
+    "openingHours": "11:00-02:00"
+  },
+  {
+    "id": "osm-node-6341584087",
+    "brandId": "mos-burger",
+    "name": "モスバーガー",
+    "lat": 36.754444,
+    "lng": 136.997044,
+    "city": "高岡市",
+    "address": "富山県高岡市",
+    "phone": "0766283835",
+    "openingHours": "Mo-Su 08:00-00:00"
+  },
+  {
+    "id": "osm-node-6695976483",
+    "brandId": "hachiban",
+    "name": "8番ラーメン",
+    "lat": 36.675454,
+    "lng": 137.210565,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-node-8505556553",
+    "brandId": "matsuya",
+    "name": "西松屋",
+    "lat": 36.740852,
+    "lng": 137.253679,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-node-9199439195",
+    "brandId": "yoshinoya",
+    "name": "吉野家",
+    "lat": 36.709812,
+    "lng": 137.172619,
+    "city": "富山市",
+    "address": "富山県富山市",
+    "phone": "076-434-9070",
+    "openingHours": "Mo-Su 07:00-24:00"
+  },
+  {
+    "id": "osm-node-10968891506",
+    "brandId": "hachiban",
+    "name": "8番らーめん",
+    "lat": 36.702063,
+    "lng": 137.212869,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-node-11312187722",
+    "brandId": "hachiban",
+    "name": "8番らーめん",
+    "lat": 36.88888,
+    "lng": 136.777936,
+    "city": "氷見市",
+    "address": "富山県氷見市"
+  },
+  {
+    "id": "osm-node-11312659696",
+    "brandId": "marugame",
+    "name": "丸亀製麺",
+    "lat": 36.89475,
+    "lng": 136.79598,
+    "city": "氷見市",
+    "address": "富山県氷見市"
+  },
+  {
+    "id": "osm-node-11987009007",
+    "brandId": "matsuya",
+    "name": "西松屋",
+    "lat": 36.703082,
+    "lng": 137.196516,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-node-12822617991",
+    "brandId": "mos-burger",
+    "name": "モスバーガー",
+    "lat": 36.730321,
+    "lng": 137.015646,
+    "city": "高岡市",
+    "address": "富山県高岡市"
+  },
+  {
+    "id": "osm-way-185923534",
+    "brandId": "cocos",
+    "name": "ココス",
+    "lat": 36.661304,
+    "lng": 137.170406,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-185923539",
+    "brandId": "gusto",
+    "name": "ステーキガスト",
+    "lat": 36.661129,
+    "lng": 137.17238,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-188220982",
+    "brandId": "marugame",
+    "name": "丸亀製麺",
+    "lat": 36.701903,
+    "lng": 137.188147,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-199754813",
+    "brandId": "gusto",
+    "name": "ガスト",
+    "lat": 36.668283,
+    "lng": 137.202061,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-199754815",
+    "brandId": "matsuya",
+    "name": "松屋",
+    "lat": 36.667914,
+    "lng": 137.210427,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-199754825",
+    "brandId": "gyoza-no-ohsho",
+    "name": "餃子の王将",
+    "lat": 36.670144,
+    "lng": 137.201827,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-201377298",
+    "brandId": "hachiban",
+    "name": "8番ラーメン",
+    "lat": 36.675961,
+    "lng": 137.248292,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-204774812",
+    "brandId": "joyfull",
+    "name": "ジョイフルシマヤ豊田店",
+    "lat": 36.727826,
+    "lng": 137.236942,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-224835751",
+    "brandId": "hachiban",
+    "name": "8番館ビル",
+    "lat": 36.691141,
+    "lng": 137.213669,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-272980759",
+    "brandId": "hachiban",
+    "name": "8番らーめん 羽根店",
+    "lat": 36.680841,
+    "lng": 137.186384,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-279116888",
+    "brandId": "cocos",
+    "name": "ココス",
+    "lat": 36.670314,
+    "lng": 137.201315,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-376784045",
+    "brandId": "gusto",
+    "name": "ガスト経堂店",
+    "lat": 36.690746,
+    "lng": 137.251081,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-400355481",
+    "brandId": "gusto",
+    "name": "ガスト",
+    "lat": 36.696365,
+    "lng": 137.246348,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-425895536",
+    "brandId": "hachiban",
+    "name": "８番らーめん福光店",
+    "lat": 36.563138,
+    "lng": 136.869404,
+    "city": "南砺市",
+    "address": "富山県南砺市福光３３６−５",
+    "openingHours": "11:00-24:00"
+  },
+  {
+    "id": "osm-way-440264351",
+    "brandId": "kurasushi",
+    "name": "くら寿司",
+    "lat": 36.66753,
+    "lng": 137.185338,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-520988982",
+    "brandId": "matsuya",
+    "name": "西松屋",
+    "lat": 36.727102,
+    "lng": 137.083504,
+    "city": "射水市",
+    "address": "富山県射水市"
+  },
+  {
+    "id": "osm-way-534055844",
+    "brandId": "mos-burger",
+    "name": "モスバーガー",
+    "lat": 36.676517,
+    "lng": 137.185488,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-540932724",
+    "brandId": "sukiya",
+    "name": "すき家",
+    "lat": 36.664023,
+    "lng": 137.176354,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-540933950",
+    "brandId": "matsuya",
+    "name": "松屋",
+    "lat": 36.663386,
+    "lng": 137.175376,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-543268559",
+    "brandId": "joyfull",
+    "name": "ジョイフル",
+    "lat": 36.725773,
+    "lng": 137.150451,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-543268561",
+    "brandId": "sukiya",
+    "name": "すき家",
+    "lat": 36.725662,
+    "lng": 137.151657,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-543268566",
+    "brandId": "mos-burger",
+    "name": "モスバーガー",
+    "lat": 36.725747,
+    "lng": 137.152651,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-544436551",
+    "brandId": "gyoza-no-ohsho",
+    "name": "餃子の王将",
+    "lat": 36.632449,
+    "lng": 136.956135,
+    "city": "砺波市",
+    "address": "富山県砺波市"
+  },
+  {
+    "id": "osm-way-544928949",
+    "brandId": "cocos",
+    "name": "ココス",
+    "lat": 36.668448,
+    "lng": 137.230074,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-546510679",
+    "brandId": "gusto",
+    "name": "ガスト",
+    "lat": 36.761077,
+    "lng": 137.002648,
+    "city": "高岡市",
+    "address": "富山県高岡市"
+  },
+  {
+    "id": "osm-way-547553239",
+    "brandId": "sukiya",
+    "name": "すき家",
+    "lat": 36.841997,
+    "lng": 136.984239,
+    "city": "氷見市",
+    "address": "富山県氷見市"
+  },
+  {
+    "id": "osm-way-552590080",
+    "brandId": "matsuya",
+    "name": "用品の松屋",
+    "lat": 36.956706,
+    "lng": 137.560036,
+    "city": "魚津市",
+    "address": "富山県魚津市"
+  },
+  {
+    "id": "osm-way-559333755",
+    "brandId": "matsuya",
+    "name": "西松屋",
+    "lat": 36.703098,
+    "lng": 137.196402,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-583959325",
+    "brandId": "marugame",
+    "name": "丸亀製麺",
+    "lat": 36.754117,
+    "lng": 137.344994,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-587700679",
+    "brandId": "cocos",
+    "name": "ココス",
+    "lat": 36.823081,
+    "lng": 137.413586,
+    "city": "魚津市",
+    "address": "富山県魚津市"
+  },
+  {
+    "id": "osm-way-610083366",
+    "brandId": "cocos",
+    "name": "ココス",
+    "lat": 36.969939,
+    "lng": 136.905995,
+    "city": "氷見市",
+    "address": "富山県氷見市"
+  },
+  {
+    "id": "osm-way-655295283",
+    "brandId": "hachiban",
+    "name": "8番らーめん 小矢部店",
+    "lat": 36.688731,
+    "lng": 136.878249,
+    "city": "高岡市",
+    "address": "富山県高岡市"
+  },
+  {
+    "id": "osm-way-658655339",
+    "brandId": "cocos",
+    "name": "ココス",
+    "lat": 36.749299,
+    "lng": 137.029827,
+    "city": "高岡市",
+    "address": "富山県高岡市"
+  },
+  {
+    "id": "osm-way-670972283",
+    "brandId": "gusto",
+    "name": "ガスト 氷見店",
+    "lat": 36.858877,
+    "lng": 136.975478,
+    "city": "氷見市",
+    "address": "富山県氷見市"
+  },
+  {
+    "id": "osm-way-732983482",
+    "brandId": "hachiban",
+    "name": "８番らーめん",
+    "lat": 36.583675,
+    "lng": 137.206342,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-732983483",
+    "brandId": "gusto",
+    "name": "ガスト",
+    "lat": 36.587091,
+    "lng": 137.205413,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-1085132022",
+    "brandId": "sukiya",
+    "name": "すき家",
+    "lat": 36.7401,
+    "lng": 136.980827,
+    "city": "高岡市",
+    "address": "富山県高岡市"
+  },
+  {
+    "id": "osm-way-1085817522",
+    "brandId": "kfc",
+    "name": "ケンタッキーフライドチキン",
+    "lat": 36.750226,
+    "lng": 136.996587,
+    "city": "高岡市",
+    "address": "富山県高岡市"
+  },
+  {
+    "id": "osm-way-1183302222",
+    "brandId": "joyfull",
+    "name": "ジョイフル富山大泉店",
+    "lat": 36.682958,
+    "lng": 137.22263,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-1263335061",
+    "brandId": "hachiban",
+    "name": "貨物8番",
+    "lat": 36.713402,
+    "lng": 137.239062,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-1306978743",
+    "brandId": "joyfull",
+    "name": "ジョイフル",
+    "lat": 36.831007,
+    "lng": 137.4172,
+    "city": "魚津市",
+    "address": "富山県魚津市"
+  },
+  {
+    "id": "osm-way-1376646771",
+    "brandId": "cocos",
+    "name": "ココス千代田店",
+    "lat": 36.717586,
+    "lng": 137.223128,
+    "city": "富山市",
+    "address": "富山県富山市"
+  },
+  {
+    "id": "osm-way-1447104398",
+    "brandId": "matsuya",
+    "name": "松屋　太閤山店",
+    "lat": 36.704129,
+    "lng": 137.096346,
+    "city": "射水市",
+    "address": "富山県射水市"
+  }
+]

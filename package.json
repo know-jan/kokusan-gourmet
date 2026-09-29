@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "update-stores": "node scripts/update-stores.mjs"
+    "update-stores": "node scripts/update-stores.mjs",
+    "fetch-osm": "node scripts/fetch-osm-stores.mjs"
   },
   "dependencies": {
     "leaflet": "^1.9.4",
